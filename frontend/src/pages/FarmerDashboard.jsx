@@ -4,6 +4,7 @@ import { farmAPI, productAPI } from '../services/api';
 import FarmSetup from '../components/FarmSetup';
 import ProductList from '../components/ProductList';
 import ProductForm from '../components/ProductForm';
+import InventoryManager from '../components/InventoryManager';
 import './FarmerDashboard.css';
 
 const FarmerDashboard = () => {
@@ -104,6 +105,13 @@ const FarmerDashboard = () => {
           disabled={!farm}
         >
           Products
+        </button>
+        <button
+          className={`nav-btn ${activeTab === 'inventory' ? 'active' : ''}`}
+          onClick={() => setActiveTab('inventory')}
+          disabled={!farm}
+        >
+          Inventory
         </button>
       </div>
 
@@ -208,6 +216,10 @@ const FarmerDashboard = () => {
               onToggleAvailability={handleToggleAvailability}
             />
           </div>
+        )}
+
+        {activeTab === 'inventory' && farm && (
+          <InventoryManager farm={farm} products={products} />
         )}
       </main>
     </div>

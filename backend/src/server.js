@@ -20,9 +20,9 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/farms', require('./routes/farms'));
 app.use('/api/products', require('./routes/products'));
+app.use('/api/inventory', require('./routes/inventory'));
 // app.use('/api/subscriptions', require('./routes/subscriptions'));
 // app.use('/api/orders', require('./routes/orders'));
-// app.use('/api/inventory', require('./routes/inventory'));
 // app.use('/api/payments', require('./routes/payments'));
 
 // Error handling middleware

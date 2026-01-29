@@ -210,8 +210,11 @@ The database includes tables for:
 - `GET /api/orders/:id/qr` - Get QR code
 
 ### Inventory
-- `POST /api/inventory` - Update inventory
-- `GET /api/inventory/farm/:farmId` - Get farm inventory
+- `POST /api/inventory` - Create/update inventory
+- `GET /api/inventory/my-farm` - Get current farm inventory
+- `GET /api/inventory/farm/:farmId` - Get farm inventory (owner only)
+- `GET /api/inventory/history` - Get inventory history
+- `GET /api/inventory/low-stock` - Get low stock items
 
 ### Payments
 - `POST /api/payments/setup-intent` - Create payment setup
@@ -221,7 +224,7 @@ The database includes tables for:
 
 See [ROADMAP.md](ROADMAP.md) for the complete development roadmap with 12 phases.
 
-**Current Phase**: Phase 4 - Inventory System
+**Current Phase**: Phase 5 - Subscription & Scheduling System
 
 ## Testing
 
@@ -259,4 +262,4 @@ For questions or issues, please refer to the PRD.md or ROADMAP.md documents.
 ---
 
 **Version**: 1.0.0
-**Last Updated**: 2026-01-28
+**Last Updated**: 2026-01-29

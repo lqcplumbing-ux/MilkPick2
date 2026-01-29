@@ -63,4 +63,13 @@ export const productAPI = {
   delete: (id) => api.delete(`/products/${id}`),
 };
 
+// Inventory APIs
+export const inventoryAPI = {
+  upsert: (data) => api.post('/inventory', data),
+  getMyInventory: (params) => api.get('/inventory/my-farm', { params }),
+  getByFarm: (farmId, params) => api.get(`/inventory/farm/${farmId}`, { params }),
+  getHistory: (params) => api.get('/inventory/history', { params }),
+  getLowStock: (params) => api.get('/inventory/low-stock', { params }),
+};
+
 export default api;

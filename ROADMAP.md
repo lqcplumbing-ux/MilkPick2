@@ -86,16 +86,16 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 **Goal**: Core recurring order scheduling logic
 
 ### Deliverables:
-- [ ] Subscription creation API
-- [ ] Subscription update/cancel APIs
-- [ ] Frequency options (weekly, bi-weekly, monthly)
-- [ ] Recurring order generation algorithm
-- [ ] Scheduled job for order creation
-- [ ] Order status management
-- [ ] Calendar view component
-- [ ] Subscription management UI
-- [ ] Date picker for schedule selection
-- [ ] Preview upcoming orders
+- [x] Subscription creation API
+- [x] Subscription update/cancel APIs
+- [x] Frequency options (weekly, bi-weekly, monthly)
+- [x] Recurring order generation algorithm
+- [x] Scheduled job for order creation
+- [x] Order status management
+- [x] Calendar view component
+- [x] Subscription management UI
+- [x] Date picker for schedule selection
+- [x] Preview upcoming orders
 
 **Dependencies**: Phase 3
 **Estimated Completion**: Phase 5
@@ -256,15 +256,15 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 
 ## Current Progress Tracking
 
-**Current Phase**: Phase 5
-**Overall Completion**: 33.3% (4/12 phases)
+**Current Phase**: Phase 6
+**Overall Completion**: 41.7% (5/12 phases)
 
 ### Phase Completion Status:
 - [x] Phase 1: Project Foundation & Setup (100%)
 - [x] Phase 2: Authentication & User Management (100%)
 - [x] Phase 3: Farm & Product Management (100%)
 - [x] Phase 4: Inventory System (100%)
-- [ ] Phase 5: Subscription & Scheduling System (0%)
+- [x] Phase 5: Subscription & Scheduling System (100%)
 - [ ] Phase 6: Customer Order Management (0%)
 - [ ] Phase 7: Farmer Order View (0%)
 - [ ] Phase 8: Pickup Confirmation System (0%)

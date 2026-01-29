@@ -202,9 +202,11 @@ The database includes tables for:
 - `GET /api/subscriptions` - List user subscriptions
 - `PUT /api/subscriptions/:id` - Update subscription
 - `DELETE /api/subscriptions/:id` - Cancel subscription
+- `GET /api/subscriptions/preview` - Preview upcoming schedule
 
 ### Orders
 - `GET /api/orders` - List orders
+- `GET /api/orders/upcoming` - List upcoming orders
 - `GET /api/orders/:id` - Get order details
 - `PUT /api/orders/:id/confirm` - Confirm pickup
 - `GET /api/orders/:id/qr` - Get QR code
@@ -224,7 +226,7 @@ The database includes tables for:
 
 See [ROADMAP.md](ROADMAP.md) for the complete development roadmap with 12 phases.
 
-**Current Phase**: Phase 5 - Subscription & Scheduling System
+**Current Phase**: Phase 6 - Customer Order Management
 
 ## Testing
 

@@ -72,4 +72,19 @@ export const inventoryAPI = {
   getLowStock: (params) => api.get('/inventory/low-stock', { params }),
 };
 
+// Subscription APIs
+export const subscriptionAPI = {
+  create: (data) => api.post('/subscriptions', data),
+  getMySubscriptions: () => api.get('/subscriptions'),
+  update: (id, data) => api.put(`/subscriptions/${id}`, data),
+  cancel: (id) => api.delete(`/subscriptions/${id}`),
+  preview: (params) => api.get('/subscriptions/preview', { params })
+};
+
+// Orders APIs
+export const orderAPI = {
+  getMyOrders: (params) => api.get('/orders', { params }),
+  getUpcoming: () => api.get('/orders/upcoming')
+};
+
 export default api;

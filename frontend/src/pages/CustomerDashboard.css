@@ -291,6 +291,116 @@
   background: #1f4420;
 }
 
+/* Subscriptions Section */
+.subscriptions-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: #2c5f2d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: #1f4420;
+}
+
+/* Orders Section */
+.orders-list {
+  margin-top: 20px;
+  display: grid;
+  gap: 15px;
+}
+
+.order-day-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+}
+
+.order-day-card h4 {
+  color: #2c5f2d;
+  margin-bottom: 10px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eee;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.order-item:first-of-type {
+  border-top: none;
+}
+
+.order-product {
+  display: block;
+  font-weight: 600;
+  color: #333;
+}
+
+.order-farm {
+  display: block;
+  font-size: 12px;
+  color: #666;
+}
+
+.order-quantity {
+  color: #2c5f2d;
+  font-weight: 600;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+/* Toast */
+.toast-error {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ffebee;
+  color: #c33;
+  border: 1px solid #f5c2c7;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 15;
+}
+
+.toast-error button {
+  background: none;
+  border: none;
+  color: #c33;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 /* Orders Section */
 .orders-section h2 {
   color: #333;

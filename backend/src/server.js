@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const cron = require('node-cron');
+const { generateOrdersForDueSubscriptions } = require('./services/subscriptionService');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,8 +23,8 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/farms', require('./routes/farms'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/inventory', require('./routes/inventory'));
-// app.use('/api/subscriptions', require('./routes/subscriptions'));
-// app.use('/api/orders', require('./routes/orders'));
+app.use('/api/subscriptions', require('./routes/subscriptions'));
+app.use('/api/orders', require('./routes/orders'));
 // app.use('/api/payments', require('./routes/payments'));
 
 // Error handling middleware
@@ -49,5 +51,19 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`MilkPick API server running on port ${PORT}`);
 });
+
+if (process.env.ENABLE_SCHEDULER !== 'false') {
+  cron.schedule('0 2 * * *', () => {
+    generateOrdersForDueSubscriptions()
+      .then((result) => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`Scheduler: created ${result.created}, updated ${result.updated}`);
+        }
+      })
+      .catch((error) => {
+        console.error('Scheduler error:', error.message);
+      });
+  });
+}
 
 module.exports = app;

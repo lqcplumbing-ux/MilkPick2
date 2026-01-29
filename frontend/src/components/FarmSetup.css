@@ -1,0 +1,76 @@
+.farm-setup {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.farm-setup h2 {
+  color: #2c5f2d;
+  margin-bottom: 10px;
+}
+
+.form-subtitle {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.farm-setup .form-group {
+  margin-bottom: 20px;
+}
+
+.farm-setup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.farm-setup input,
+.farm-setup textarea,
+.farm-setup select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.farm-setup input:focus,
+.farm-setup textarea:focus,
+.farm-setup select:focus {
+  outline: none;
+  border-color: #2c5f2d;
+}
+
+.farm-setup textarea {
+  resize: vertical;
+}
+
+.farm-setup .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.farm-setup .btn-primary {
+  margin-top: 20px;
+}
+
+.error-message {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  background: #efe;
+  border: 1px solid #cfc;
+  color: #2c5f2d;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}

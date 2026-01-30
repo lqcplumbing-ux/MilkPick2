@@ -1,13 +1,16 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { farmAPI, productAPI, subscriptionAPI, orderAPI } from '../services/api';
 import SubscriptionForm from '../components/SubscriptionForm';
 import SubscriptionList from '../components/SubscriptionList';
 import ScheduleCalendar from '../components/ScheduleCalendar';
+import OrderEditForm from '../components/OrderEditForm';
 import './CustomerDashboard.css';
 
 const CustomerDashboard = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [farms, setFarms] = useState([]);
   const [products, setProducts] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
@@ -19,9 +22,14 @@ const CustomerDashboard = () => {
   const [activeTab, setActiveTab] = useState('farms');
   const [productFilter, setProductFilter] = useState('all');
   const [showSubscriptionForm, setShowSubscriptionForm] = useState(false);
+  const [showOrderEdit, setShowOrderEdit] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editingSubscription, setEditingSubscription] = useState(null);
+  const [editingOrder, setEditingOrder] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [orderView, setOrderView] = useState('upcoming');
+  const [orderStatusFilter, setOrderStatusFilter] = useState('all');
+  const [orderSearch, setOrderSearch] = useState('');
 
   useEffect(() => {
     loadData();
@@ -40,7 +48,7 @@ const CustomerDashboard = () => {
         farmAPI.getAll(),
         productAPI.getAll({ available: true }),
         subscriptionAPI.getMySubscriptions(),
-        orderAPI.getUpcoming()
+        orderAPI.getMyOrders()
       ]);
       setFarms(farmsResponse.data.farms);
       setProducts(productsResponse.data.products);
@@ -68,7 +76,7 @@ const CustomerDashboard = () => {
   const loadOrders = async () => {
     setOrdersLoading(true);
     try {
-      const response = await orderAPI.getUpcoming();
+      const response = await orderAPI.getMyOrders();
       setOrders(response.data.orders || []);
     } catch (error) {
       console.error('Error loading orders:', error);
@@ -117,6 +125,24 @@ const CustomerDashboard = () => {
     }
   };
 
+  const handleOrderEdit = (order) => {
+    setEditingOrder(order);
+    setShowOrderEdit(true);
+  };
+
+  const handleOrderCancel = async (order) => {
+    if (!window.confirm('Cancel this order?')) {
+      return;
+    }
+    try {
+      await orderAPI.cancel(order.id);
+      await loadOrders();
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      setErrorMessage('Failed to cancel order');
+    }
+  };
+
   const filteredProducts = products.filter(product => {
     if (selectedFarm && product.farm_id !== selectedFarm.id) return false;
     if (productFilter !== 'all' && product.type !== productFilter) return false;
@@ -131,16 +157,43 @@ const CustomerDashboard = () => {
     }
   };
 
+  const filteredOrders = useMemo(() => {
+    let list = orders;
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (orderView === 'upcoming') {
+      list = list.filter((order) => order.scheduled_date >= today && order.status !== 'cancelled');
+    }
+    if (orderView === 'history') {
+      list = list.filter((order) => order.scheduled_date < today || order.status === 'cancelled');
+    }
+
+    if (orderStatusFilter !== 'all') {
+      list = list.filter((order) => order.status === orderStatusFilter);
+    }
+
+    if (orderSearch.trim()) {
+      const term = orderSearch.toLowerCase();
+      list = list.filter((order) => {
+        const productName = order.products?.name?.toLowerCase() || '';
+        const farmName = order.farms?.name?.toLowerCase() || '';
+        return productName.includes(term) || farmName.includes(term);
+      });
+    }
+
+    return list;
+  }, [orders, orderView, orderStatusFilter, orderSearch]);
+
   const groupedOrders = useMemo(() => {
     const groups = {};
-    orders.forEach((order) => {
+    filteredOrders.forEach((order) => {
       if (!groups[order.scheduled_date]) {
         groups[order.scheduled_date] = [];
       }
       groups[order.scheduled_date].push(order);
     });
     return groups;
-  }, [orders]);
+  }, [filteredOrders]);
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -269,9 +322,17 @@ const CustomerDashboard = () => {
                         <span className="product-price">
                           ${parseFloat(product.price).toFixed(2)}/{product.unit}
                         </span>
-                        <button className="btn-order" onClick={() => handleSubscribeClick(product)}>
-                          Subscribe
-                        </button>
+                        <div className="product-actions">
+                          <button
+                            className="btn-secondary"
+                            onClick={() => navigate(`/products/${product.id}`)}
+                          >
+                            Details
+                          </button>
+                          <button className="btn-order" onClick={() => handleSubscribeClick(product)}>
+                            Subscribe
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -317,7 +378,7 @@ const CustomerDashboard = () => {
             <div className="section-header">
               <div>
                 <h2>Pickup Schedule</h2>
-                <p className="section-subtitle">Track your upcoming orders and pickup dates.</p>
+                <p className="section-subtitle">Track and manage your upcoming orders.</p>
               </div>
             </div>
 
@@ -329,23 +390,92 @@ const CustomerDashboard = () => {
               </div>
             ) : (
               <>
-                <ScheduleCalendar orders={orders} />
-                <div className="orders-list">
-                  {Object.keys(groupedOrders).map((date) => (
-                    <div key={date} className="order-day-card">
-                      <h4>{date}</h4>
-                      {groupedOrders[date].map((order) => (
-                        <div key={order.id} className="order-item">
-                          <div>
-                            <span className="order-product">{order.products?.name || 'Product'}</span>
-                            <span className="order-farm">{order.farms?.name || 'Farm'}</span>
-                          </div>
-                          <span className="order-quantity">{order.quantity} {order.products?.unit || ''}</span>
+                <div className="policy-card">
+                  <strong>Cancellation policy:</strong> Cancel at least 24 hours before pickup to avoid penalties.
+                </div>
+
+                <div className="order-filters">
+                  <div className="toggle-group">
+                    <button
+                      className={orderView === 'upcoming' ? 'active' : ''}
+                      onClick={() => setOrderView('upcoming')}
+                    >
+                      Upcoming
+                    </button>
+                    <button
+                      className={orderView === 'history' ? 'active' : ''}
+                      onClick={() => setOrderView('history')}
+                    >
+                      History
+                    </button>
+                  </div>
+                  <div className="filter-group">
+                    <label>Status</label>
+                    <select value={orderStatusFilter} onChange={(e) => setOrderStatusFilter(e.target.value)}>
+                      <option value="all">All</option>
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="picked_up">Picked Up</option>
+                      <option value="late">Late</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="no_show">No Show</option>
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label>Search</label>
+                    <input
+                      type="text"
+                      value={orderSearch}
+                      onChange={(e) => setOrderSearch(e.target.value)}
+                      placeholder="Farm or product"
+                    />
+                  </div>
+                </div>
+
+                {filteredOrders.length === 0 ? (
+                  <div className="empty-state">
+                    <p>No orders match the current filters.</p>
+                  </div>
+                ) : (
+                  <>
+                    <ScheduleCalendar orders={filteredOrders} />
+                    <div className="orders-list">
+                    {Object.keys(groupedOrders).sort().map((date) => (
+                        <div key={date} className="order-day-card">
+                          <h4>{date}</h4>
+                          {groupedOrders[date].map((order) => (
+                            <div key={order.id} className="order-item">
+                              <div>
+                                <span className="order-product">{order.products?.name || 'Product'}</span>
+                                <span className="order-farm">{order.farms?.name || 'Farm'}</span>
+                                <span className={`order-status ${order.status}`}>{order.status}</span>
+                              </div>
+                              <div className="order-actions">
+                                <span className="order-quantity">{order.quantity} {order.products?.unit || ''}</span>
+                                {order.status === 'pending' && orderView === 'upcoming' && (
+                                  <>
+                                    <button
+                                      className="btn-secondary"
+                                      onClick={() => handleOrderEdit(order)}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      className="btn-danger"
+                                      onClick={() => handleOrderCancel(order)}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       ))}
                     </div>
-                  ))}
-                </div>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -364,6 +494,23 @@ const CustomerDashboard = () => {
               setSelectedProduct(null);
               setEditingSubscription(null);
               setErrorMessage('');
+            }}
+          />
+        </div>
+      )}
+
+      {showOrderEdit && editingOrder && (
+        <div className="modal-backdrop">
+          <OrderEditForm
+            order={editingOrder}
+            onSaved={async () => {
+              setShowOrderEdit(false);
+              setEditingOrder(null);
+              await loadOrders();
+            }}
+            onCancel={() => {
+              setShowOrderEdit(false);
+              setEditingOrder(null);
             }}
           />
         </div>

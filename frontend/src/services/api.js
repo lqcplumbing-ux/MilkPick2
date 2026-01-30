@@ -84,7 +84,15 @@ export const subscriptionAPI = {
 // Orders APIs
 export const orderAPI = {
   getMyOrders: (params) => api.get('/orders', { params }),
-  getUpcoming: () => api.get('/orders/upcoming')
+  getUpcoming: () => api.get('/orders/upcoming'),
+  update: (id, data) => api.put(`/orders/${id}`, data),
+  cancel: (id) => api.patch(`/orders/${id}/cancel`)
+};
+
+// Farmer Orders APIs
+export const farmerOrderAPI = {
+  getFarmOrders: (params) => api.get('/orders/farm', { params }),
+  getStats: (params) => api.get('/orders/farm/stats', { params })
 };
 
 export default api;

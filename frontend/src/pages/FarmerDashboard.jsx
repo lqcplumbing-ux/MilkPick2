@@ -5,6 +5,7 @@ import FarmSetup from '../components/FarmSetup';
 import ProductList from '../components/ProductList';
 import ProductForm from '../components/ProductForm';
 import InventoryManager from '../components/InventoryManager';
+import FarmerOrders from '../components/FarmerOrders';
 import './FarmerDashboard.css';
 
 const FarmerDashboard = () => {
@@ -113,6 +114,13 @@ const FarmerDashboard = () => {
         >
           Inventory
         </button>
+        <button
+          className={`nav-btn ${activeTab === 'orders' ? 'active' : ''}`}
+          onClick={() => setActiveTab('orders')}
+          disabled={!farm}
+        >
+          Orders
+        </button>
       </div>
 
       <main className="dashboard-main">
@@ -220,6 +228,10 @@ const FarmerDashboard = () => {
 
         {activeTab === 'inventory' && farm && (
           <InventoryManager farm={farm} products={products} />
+        )}
+
+        {activeTab === 'orders' && farm && (
+          <FarmerOrders />
         )}
       </main>
     </div>

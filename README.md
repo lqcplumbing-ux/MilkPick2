@@ -207,6 +207,10 @@ The database includes tables for:
 ### Orders
 - `GET /api/orders` - List orders
 - `GET /api/orders/upcoming` - List upcoming orders
+- `PUT /api/orders/:id` - Update upcoming order (date/quantity/notes)
+- `PATCH /api/orders/:id/cancel` - Cancel upcoming order
+- `GET /api/orders/farm` - List orders for farmer's farm
+- `GET /api/orders/farm/stats` - Order stats for farmer
 - `GET /api/orders/:id` - Get order details
 - `PUT /api/orders/:id/confirm` - Confirm pickup
 - `GET /api/orders/:id/qr` - Get QR code
@@ -226,7 +230,7 @@ The database includes tables for:
 
 See [ROADMAP.md](ROADMAP.md) for the complete development roadmap with 12 phases.
 
-**Current Phase**: Phase 6 - Customer Order Management
+**Current Phase**: Phase 8 - Pickup Confirmation System
 
 ## Testing
 

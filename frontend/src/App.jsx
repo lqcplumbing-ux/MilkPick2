@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import FarmerDashboard from './pages/FarmerDashboard'
 import CustomerDashboard from './pages/CustomerDashboard'
+import ProductDetail from './pages/ProductDetail'
 import './App.css'
 
 // Dashboard router based on user role
@@ -37,6 +38,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DashboardRouter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/products/:id"
+              element={
+                <ProtectedRoute>
+                  <ProductDetail />
                 </ProtectedRoute>
               }
             />

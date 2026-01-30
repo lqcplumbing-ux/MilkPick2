@@ -106,16 +106,16 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 **Goal**: Customer-facing features for browsing and ordering
 
 ### Deliverables:
-- [ ] Customer dashboard UI
-- [ ] Browse farms interface
-- [ ] Browse products by farm
-- [ ] Product detail pages
-- [ ] Create subscription flow (multi-step form)
-- [ ] Modify upcoming order UI
-- [ ] Cancel order with confirmation
-- [ ] Order history view
-- [ ] Filter and search orders
-- [ ] Cancellation policy display
+- [x] Customer dashboard UI
+- [x] Browse farms interface
+- [x] Browse products by farm
+- [x] Product detail pages
+- [x] Create subscription flow (multi-step form)
+- [x] Modify upcoming order UI
+- [x] Cancel order with confirmation
+- [x] Order history view
+- [x] Filter and search orders
+- [x] Cancellation policy display
 
 **Dependencies**: Phase 5
 **Estimated Completion**: Phase 6
@@ -126,16 +126,16 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 **Goal**: Farmer order management and visibility
 
 ### Deliverables:
-- [ ] Get orders by farm API
-- [ ] Filter orders by date range and status
-- [ ] Order statistics API
-- [ ] Farmer order dashboard UI
-- [ ] Upcoming orders list view
-- [ ] Order details modal
-- [ ] Filter controls
-- [ ] Export orders to CSV
-- [ ] Order search functionality
-- [ ] Customer contact info display
+- [x] Get orders by farm API
+- [x] Filter orders by date range and status
+- [x] Order statistics API
+- [x] Farmer order dashboard UI
+- [x] Upcoming orders list view
+- [x] Order details modal
+- [x] Filter controls
+- [x] Export orders to CSV
+- [x] Order search functionality
+- [x] Customer contact info display
 
 **Dependencies**: Phase 5
 **Estimated Completion**: Phase 7
@@ -256,8 +256,8 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 
 ## Current Progress Tracking
 
-**Current Phase**: Phase 6
-**Overall Completion**: 41.7% (5/12 phases)
+**Current Phase**: Phase 8
+**Overall Completion**: 58.3% (7/12 phases)
 
 ### Phase Completion Status:
 - [x] Phase 1: Project Foundation & Setup (100%)
@@ -265,8 +265,8 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 - [x] Phase 3: Farm & Product Management (100%)
 - [x] Phase 4: Inventory System (100%)
 - [x] Phase 5: Subscription & Scheduling System (100%)
-- [ ] Phase 6: Customer Order Management (0%)
-- [ ] Phase 7: Farmer Order View (0%)
+- [x] Phase 6: Customer Order Management (100%)
+- [x] Phase 7: Farmer Order View (100%)
 - [ ] Phase 8: Pickup Confirmation System (0%)
 - [ ] Phase 9: Payment Integration (0%)
 - [ ] Phase 10: Notification System (0%)

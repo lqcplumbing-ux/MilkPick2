@@ -1,4 +1,5 @@
 const supabase = require('../config/supabase');
+const { attemptChargeForOrder } = require('./paymentService');
 
 const parseDate = (dateString) => {
   if (!dateString) return null;
@@ -119,6 +120,12 @@ const ensureOrderForSubscription = async (subscription, scheduledDate) => {
 
   if (error) {
     throw new Error('Failed to create order');
+  }
+
+  try {
+    await attemptChargeForOrder(newOrder);
+  } catch (paymentError) {
+    console.error('Payment attempt failed:', paymentError.message);
   }
 
   return newOrder;

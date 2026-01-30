@@ -1,0 +1,125 @@
+.farmer-payouts {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.farmer-payouts .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.section-subtitle {
+  color: #666;
+  font-size: 14px;
+}
+
+.connect-status {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.status-card {
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.status-card h4 {
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  background: #e8f5e9;
+  color: #2c5f2d;
+}
+
+.status-pill.active {
+  background: #e8f5e9;
+  color: #2c5f2d;
+}
+
+.status-pill.pending {
+  background: #fff4e5;
+  color: #8a5200;
+}
+
+.status-pill.succeeded {
+  background: #e8f5e9;
+  color: #2c5f2d;
+}
+
+.status-pill.failed {
+  background: #ffebee;
+  color: #c33;
+}
+
+.status-pill.refunded {
+  background: #e3f2fd;
+  color: #1b6ec2;
+}
+
+.status-pill.pending {
+  background: #fff4e5;
+  color: #8a5200;
+}
+
+.payout-history {
+  margin-top: 20px;
+}
+
+.error-message {
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #ffebee;
+  color: #c33;
+  border: 1px solid #f5c2c7;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.history-list {
+  display: grid;
+  gap: 12px;
+}
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  background: #fff;
+}
+
+.history-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.history-meta {
+  font-size: 12px;
+  color: #777;
+}
+
+.history-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-weight: 600;
+}

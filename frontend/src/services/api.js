@@ -99,4 +99,19 @@ export const farmerOrderAPI = {
   scanQr: (data) => api.post('/orders/scan', data)
 };
 
+// Payments APIs
+export const paymentAPI = {
+  createSetupIntent: () => api.post('/payments/setup-intent'),
+  storePaymentMethod: (data) => api.post('/payments/methods', data),
+  getMethods: () => api.get('/payments/methods'),
+  setDefaultMethod: (id) => api.post(`/payments/methods/${id}/default`),
+  removeMethod: (id) => api.delete(`/payments/methods/${id}`),
+  getHistory: () => api.get('/payments/history'),
+  payOrder: (id) => api.post(`/payments/orders/${id}/pay`),
+  refundOrder: (id) => api.post(`/payments/orders/${id}/refund`),
+  connectOnboard: () => api.post('/payments/connect/onboard'),
+  connectStatus: () => api.get('/payments/connect/status'),
+  getFarmTransactions: () => api.get('/payments/farm/transactions')
+};
+
 export default api;

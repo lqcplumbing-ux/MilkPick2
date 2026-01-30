@@ -4,12 +4,17 @@ const cors = require('cors');
 const cron = require('node-cron');
 const { generateOrdersForDueSubscriptions } = require('./services/subscriptionService');
 const { markLateOrders } = require('./services/pickupService');
+const paymentController = require('./controllers/paymentController');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
+
+// Stripe webhook needs raw body
+app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), paymentController.handleWebhook);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,7 +31,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/subscriptions', require('./routes/subscriptions'));
 app.use('/api/orders', require('./routes/orders'));
-// app.use('/api/payments', require('./routes/payments'));
+app.use('/api/payments', require('./routes/payments'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

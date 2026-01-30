@@ -216,6 +216,20 @@ The database includes tables for:
 - `POST /api/orders/:id/self-confirm` - Customer self pickup confirmation
 - `POST /api/orders/scan` - Confirm pickup via QR scan
 
+### Payments
+- `POST /api/payments/setup-intent` - Create setup intent for saving cards
+- `POST /api/payments/methods` - Store payment method
+- `GET /api/payments/methods` - List payment methods
+- `POST /api/payments/methods/:id/default` - Set default payment method
+- `DELETE /api/payments/methods/:id` - Remove payment method
+- `POST /api/payments/orders/:id/pay` - Pay for an order
+- `POST /api/payments/orders/:id/refund` - Refund an order (farmers)
+- `GET /api/payments/history` - Customer payment history
+- `POST /api/payments/connect/onboard` - Stripe Connect onboarding
+- `GET /api/payments/connect/status` - Stripe Connect status
+- `GET /api/payments/farm/transactions` - Farm transactions
+- `POST /api/payments/webhook` - Stripe webhook handler
+
 ### Inventory
 - `POST /api/inventory` - Create/update inventory
 - `GET /api/inventory/my-farm` - Get current farm inventory
@@ -231,7 +245,7 @@ The database includes tables for:
 
 See [ROADMAP.md](ROADMAP.md) for the complete development roadmap with 12 phases.
 
-**Current Phase**: Phase 9 - Payment Integration
+**Current Phase**: Phase 10 - Notification System
 
 ## Testing
 

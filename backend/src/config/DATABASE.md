@@ -43,6 +43,7 @@ Stores both customer and farmer accounts.
 - `phone` (VARCHAR): Phone number for notifications
 - `first_name` (VARCHAR): User's first name
 - `last_name` (VARCHAR): User's last name
+- `stripe_customer_id` (VARCHAR): Stripe customer ID
 - `created_at` (TIMESTAMP): Account creation time
 - `updated_at` (TIMESTAMP): Last update time
 
@@ -287,4 +288,4 @@ Row Level Security (RLS) is enabled on all tables. Policies should be configured
 
 ---
 
-**Last Updated:** 2026-01-27
+**Last Updated:** 2026-01-30

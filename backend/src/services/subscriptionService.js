@@ -1,5 +1,6 @@
 const supabase = require('../config/supabase');
 const { attemptChargeForOrder } = require('./paymentService');
+const { sendOrderConfirmation } = require('./notificationService');
 
 const parseDate = (dateString) => {
   if (!dateString) return null;
@@ -72,7 +73,7 @@ const buildUpcomingDates = (startDateString, frequency, count, fromDateString) =
 const getProductPricing = async (productId) => {
   const { data: product, error } = await supabase
     .from('products')
-    .select('id, price')
+    .select('id, price, name, unit')
     .eq('id', productId)
     .single();
 
@@ -120,6 +121,15 @@ const ensureOrderForSubscription = async (subscription, scheduledDate) => {
 
   if (error) {
     throw new Error('Failed to create order');
+  }
+
+  try {
+    await sendOrderConfirmation({
+      ...newOrder,
+      products: product
+    });
+  } catch (notifyError) {
+    console.error('Order confirmation notification error:', notifyError.message);
   }
 
   try {

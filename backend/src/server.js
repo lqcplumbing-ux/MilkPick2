@@ -4,6 +4,7 @@ const cors = require('cors');
 const cron = require('node-cron');
 const { generateOrdersForDueSubscriptions } = require('./services/subscriptionService');
 const { markLateOrders } = require('./services/pickupService');
+const { sendPickupReminders, sendWeeklyCustomerSummaries, sendWeeklyFarmerSummaries } = require('./services/notificationService');
 const paymentController = require('./controllers/paymentController');
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/subscriptions', require('./routes/subscriptions'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/payments', require('./routes/payments'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -80,6 +82,30 @@ if (process.env.ENABLE_SCHEDULER !== 'false') {
       })
       .catch((error) => {
         console.error('Late pickup scheduler error:', error.message);
+      });
+  });
+
+  cron.schedule('0 8 * * *', () => {
+    sendPickupReminders()
+      .then(() => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Scheduler: pickup reminders sent');
+        }
+      })
+      .catch((error) => {
+        console.error('Pickup reminder scheduler error:', error.message);
+      });
+  });
+
+  cron.schedule('0 9 * * 1', () => {
+    Promise.all([sendWeeklyCustomerSummaries(), sendWeeklyFarmerSummaries()])
+      .then(() => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Scheduler: weekly summaries sent');
+        }
+      })
+      .catch((error) => {
+        console.error('Weekly summary scheduler error:', error.message);
       });
   });
 }

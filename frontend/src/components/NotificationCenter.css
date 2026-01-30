@@ -1,0 +1,134 @@
+.notification-center {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.notification-center .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.section-subtitle {
+  color: #666;
+  font-size: 14px;
+}
+
+.preference-panel {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.preference-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.preference-row label,
+.preference-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.preference-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.notification-history {
+  margin-top: 20px;
+}
+
+.history-list {
+  display: grid;
+  gap: 12px;
+}
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #fff;
+}
+
+.history-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.history-meta {
+  font-size: 12px;
+  color: #777;
+}
+
+.history-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.history-date {
+  font-size: 12px;
+  color: #777;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  background: #e8f5e9;
+  color: #2c5f2d;
+}
+
+.status-pill.failed {
+  background: #ffebee;
+  color: #c33;
+}
+
+.status-pill.pending {
+  background: #fff4e5;
+  color: #8a5200;
+}
+
+.status-pill.refunded {
+  background: #e3f2fd;
+  color: #1b6ec2;
+}
+
+.success-message {
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #e8f5e9;
+  color: #2c5f2d;
+  border: 1px solid #c8e6c9;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.error-message {
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #ffebee;
+  color: #c33;
+  border: 1px solid #f5c2c7;
+  margin-bottom: 10px;
+  font-size: 14px;
+}

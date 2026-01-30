@@ -59,6 +59,14 @@ exports.register = async (req, res) => {
       return res.status(500).json({ error: 'Failed to create user' });
     }
 
+    try {
+      await supabase
+        .from('notification_preferences')
+        .insert([{ user_id: newUser.id }]);
+    } catch (prefError) {
+      console.error('Error creating notification preferences:', prefError.message);
+    }
+
     // Generate token
     const token = generateToken(newUser.id, newUser.email, newUser.role);
 

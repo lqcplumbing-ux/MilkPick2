@@ -7,6 +7,7 @@ import SubscriptionList from '../components/SubscriptionList';
 import ScheduleCalendar from '../components/ScheduleCalendar';
 import OrderEditForm from '../components/OrderEditForm';
 import PaymentCenter from '../components/PaymentCenter';
+import NotificationCenter from '../components/NotificationCenter';
 import './CustomerDashboard.css';
 
 const CustomerDashboard = () => {
@@ -319,6 +320,12 @@ const CustomerDashboard = () => {
         >
           Payments
         </button>
+        <button
+          className={`nav-btn ${activeTab === 'notifications' ? 'active' : ''}`}
+          onClick={() => setActiveTab('notifications')}
+        >
+          Notifications
+        </button>
       </div>
 
       <main className="dashboard-main">
@@ -590,6 +597,10 @@ const CustomerDashboard = () => {
 
         {activeTab === 'payments' && (
           <PaymentCenter />
+        )}
+
+        {activeTab === 'notifications' && (
+          <NotificationCenter />
         )}
       </main>
 

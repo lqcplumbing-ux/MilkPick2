@@ -1,5 +1,6 @@
 const supabase = require('../config/supabase');
 const { getStripeClient } = require('./stripeService');
+const { sendPaymentConfirmation } = require('./notificationService');
 
 const DEFAULT_CURRENCY = 'usd';
 
@@ -175,6 +176,14 @@ const attemptChargeForOrder = async (order) => {
       stripe_payment_intent_id: paymentIntent.id,
       stripe_charge_id: paymentIntent.latest_charge || null
     });
+
+    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+      try {
+        await sendPaymentConfirmation(order);
+      } catch (notifyError) {
+        console.error('Payment confirmation notification error:', notifyError.message);
+      }
+    }
 
     return { status: 'succeeded', paymentIntent };
   } catch (error) {

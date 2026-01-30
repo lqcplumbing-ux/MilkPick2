@@ -9,6 +9,7 @@ const {
   upsertTransaction,
   updateOrderPaymentStatus
 } = require('../services/paymentService');
+const { sendPaymentConfirmation } = require('../services/notificationService');
 
 const getFarmForFarmer = async (farmerId) => {
   const { data: farm, error } = await supabase
@@ -516,6 +517,13 @@ exports.handleWebhook = async (req, res) => {
         const intent = event.data.object;
         const order = await getOrderByPaymentIntent(intent.id);
         await updateOrderPaymentStatusByIntent(intent.id, { payment_status: 'paid' });
+        if (order) {
+          try {
+            await sendPaymentConfirmation(order);
+          } catch (notifyError) {
+            console.error('Payment confirmation notification error:', notifyError.message);
+          }
+        }
         const succeededTransaction = {
           order_id: order?.id || intent.metadata?.order_id || null,
           customer_id: order?.customer_id || intent.metadata?.customer_id || null,
@@ -596,7 +604,7 @@ const getOrderByPaymentIntent = async (intentId) => {
   }
   const { data: order } = await supabase
     .from('orders')
-    .select('id, customer_id, farm_id, total_amount')
+    .select('id, customer_id, farm_id, total_amount, scheduled_date, quantity, product_id')
     .eq('payment_intent_id', intentId)
     .maybeSingle();
 

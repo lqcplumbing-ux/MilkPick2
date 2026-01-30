@@ -7,6 +7,7 @@ const {
   isConfirmableStatus,
   updatePickupConfirmation
 } = require('../services/pickupService');
+const { sendScheduleChange } = require('../services/notificationService');
 
 const getFarmForFarmer = async (farmerId) => {
   const { data: farm, error } = await supabase
@@ -354,6 +355,24 @@ exports.updateOrder = async (req, res) => {
       return res.status(500).json({ error: 'Failed to update order' });
     }
 
+    try {
+      const changes = [];
+      if (updateData.scheduled_date && updateData.scheduled_date !== order.scheduled_date) {
+        changes.push(`Pickup date changed to ${updateData.scheduled_date}.`);
+      }
+      if (updateData.quantity && updateData.quantity !== order.quantity) {
+        changes.push(`Quantity updated to ${updateData.quantity}.`);
+      }
+      if (updateData.notes !== undefined && updateData.notes !== order.notes) {
+        changes.push('Notes updated.');
+      }
+      if (changes.length > 0) {
+        await sendScheduleChange(updatedOrder, changes.join(' '));
+      }
+    } catch (notifyError) {
+      console.error('Schedule change notification error:', notifyError.message);
+    }
+
     res.json({
       message: 'Order updated successfully',
       order: updatedOrder
@@ -399,6 +418,12 @@ exports.cancelOrder = async (req, res) => {
     if (error) {
       console.error('Error cancelling order:', error);
       return res.status(500).json({ error: 'Failed to cancel order' });
+    }
+
+    try {
+      await sendScheduleChange(cancelledOrder, 'Order cancelled.');
+    } catch (notifyError) {
+      console.error('Schedule change notification error:', notifyError.message);
     }
 
     res.json({

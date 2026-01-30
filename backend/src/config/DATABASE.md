@@ -204,7 +204,27 @@ Log of all notifications sent.
 - `idx_notifications_type`: Filter by type
 - `idx_notifications_status`: Filter by status
 
-### 9. payment_methods
+### 9. notification_preferences
+User-level notification preferences for SMS/email and categories.
+
+**Columns:**
+- `id` (UUID, PK): Unique identifier
+- `user_id` (UUID, FK → users): User
+- `sms_enabled` (BOOLEAN): Allow SMS notifications
+- `email_enabled` (BOOLEAN): Allow email notifications
+- `order_confirmation` (BOOLEAN): Order confirmation alerts
+- `pickup_reminder` (BOOLEAN): Pickup reminder alerts
+- `late_pickup` (BOOLEAN): Late pickup alerts
+- `schedule_change` (BOOLEAN): Schedule change alerts
+- `payment_confirmation` (BOOLEAN): Payment confirmation alerts
+- `weekly_summary` (BOOLEAN): Weekly summary emails
+- `surplus_alert` (BOOLEAN): Surplus alerts
+- `created_at`, `updated_at` (TIMESTAMP)
+
+**Indexes:**
+- `idx_notification_preferences_user_id`: Preferences by user
+
+### 10. payment_methods
 Customer payment methods (Stripe).
 
 **Columns:**
@@ -221,7 +241,7 @@ Customer payment methods (Stripe).
 **Indexes:**
 - `idx_payment_methods_user_id`: User payment methods
 
-### 10. transactions
+### 11. transactions
 Payment transaction log.
 
 **Columns:**
@@ -243,7 +263,7 @@ Payment transaction log.
 - `idx_transactions_farm_id`: Farm transactions
 - `idx_transactions_status`: Filter by status
 
-### 11. settings
+### 12. settings
 Configuration settings (farm-specific or global).
 
 **Columns:**

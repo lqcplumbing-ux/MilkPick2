@@ -114,4 +114,11 @@ export const paymentAPI = {
   getFarmTransactions: () => api.get('/payments/farm/transactions')
 };
 
+// Notifications APIs
+export const notificationAPI = {
+  getPreferences: () => api.get('/notifications/preferences'),
+  updatePreferences: (data) => api.put('/notifications/preferences', data),
+  getNotifications: (params) => api.get('/notifications', { params })
+};
+
 export default api;

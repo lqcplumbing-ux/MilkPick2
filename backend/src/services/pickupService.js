@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const QRCode = require('qrcode');
 const supabase = require('../config/supabase');
 const { parseDate } = require('./subscriptionService');
+const { sendLatePickup } = require('./notificationService');
 
 const DEFAULT_GRACE_HOURS = 24;
 
@@ -74,7 +75,19 @@ const markLateOrders = async () => {
 
   const { data: orders, error } = await supabase
     .from('orders')
-    .select('id, scheduled_date, status')
+    .select(`
+      id,
+      scheduled_date,
+      status,
+      customer_id,
+      farm_id,
+      quantity,
+      total_amount,
+      products (
+        name,
+        unit
+      )
+    `)
     .in('status', ['pending', 'confirmed'])
     .lte('scheduled_date', cutoffDate);
 
@@ -103,6 +116,11 @@ const markLateOrders = async () => {
 
     if (!updateError) {
       updatedCount += 1;
+      try {
+        await sendLatePickup(order);
+      } catch (notifyError) {
+        console.error('Late pickup notification error:', notifyError.message);
+      }
     }
   }
 

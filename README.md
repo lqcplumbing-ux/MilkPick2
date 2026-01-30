@@ -230,6 +230,11 @@ The database includes tables for:
 - `GET /api/payments/farm/transactions` - Farm transactions
 - `POST /api/payments/webhook` - Stripe webhook handler
 
+### Notifications
+- `GET /api/notifications` - Notification history
+- `GET /api/notifications/preferences` - Get notification preferences
+- `PUT /api/notifications/preferences` - Update notification preferences
+
 ### Inventory
 - `POST /api/inventory` - Create/update inventory
 - `GET /api/inventory/my-farm` - Get current farm inventory
@@ -245,7 +250,7 @@ The database includes tables for:
 
 See [ROADMAP.md](ROADMAP.md) for the complete development roadmap with 12 phases.
 
-**Current Phase**: Phase 10 - Notification System
+**Current Phase**: Phase 11 - Surplus Queue System
 
 ## Testing
 

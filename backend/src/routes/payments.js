@@ -24,6 +24,7 @@ router.post('/methods', authenticate, isCustomer, [
   body('make_default')
     .optional()
     .isBoolean()
+    .toBoolean()
 ], paymentController.storePaymentMethod);
 
 /**

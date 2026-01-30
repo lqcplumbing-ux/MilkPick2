@@ -86,13 +86,17 @@ export const orderAPI = {
   getMyOrders: (params) => api.get('/orders', { params }),
   getUpcoming: () => api.get('/orders/upcoming'),
   update: (id, data) => api.put(`/orders/${id}`, data),
-  cancel: (id) => api.patch(`/orders/${id}/cancel`)
+  cancel: (id) => api.patch(`/orders/${id}/cancel`),
+  getQr: (id) => api.get(`/orders/${id}/qr`),
+  selfConfirm: (id) => api.post(`/orders/${id}/self-confirm`)
 };
 
 // Farmer Orders APIs
 export const farmerOrderAPI = {
   getFarmOrders: (params) => api.get('/orders/farm', { params }),
-  getStats: (params) => api.get('/orders/farm/stats', { params })
+  getStats: (params) => api.get('/orders/farm/stats', { params }),
+  confirmPickup: (id) => api.post(`/orders/${id}/confirm`),
+  scanQr: (data) => api.post('/orders/scan', data)
 };
 
 export default api;

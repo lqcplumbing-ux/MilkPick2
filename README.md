@@ -211,9 +211,10 @@ The database includes tables for:
 - `PATCH /api/orders/:id/cancel` - Cancel upcoming order
 - `GET /api/orders/farm` - List orders for farmer's farm
 - `GET /api/orders/farm/stats` - Order stats for farmer
-- `GET /api/orders/:id` - Get order details
-- `PUT /api/orders/:id/confirm` - Confirm pickup
-- `GET /api/orders/:id/qr` - Get QR code
+- `GET /api/orders/:id/qr` - Get QR code for pickup
+- `POST /api/orders/:id/confirm` - Farmer manual pickup confirmation
+- `POST /api/orders/:id/self-confirm` - Customer self pickup confirmation
+- `POST /api/orders/scan` - Confirm pickup via QR scan
 
 ### Inventory
 - `POST /api/inventory` - Create/update inventory
@@ -230,7 +231,7 @@ The database includes tables for:
 
 See [ROADMAP.md](ROADMAP.md) for the complete development roadmap with 12 phases.
 
-**Current Phase**: Phase 8 - Pickup Confirmation System
+**Current Phase**: Phase 9 - Payment Integration
 
 ## Testing
 
@@ -268,4 +269,4 @@ For questions or issues, please refer to the PRD.md or ROADMAP.md documents.
 ---
 
 **Version**: 1.0.0
-**Last Updated**: 2026-01-29
+**Last Updated**: 2026-01-30

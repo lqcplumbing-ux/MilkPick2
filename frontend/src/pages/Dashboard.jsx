@@ -69,8 +69,8 @@ const Dashboard = () => {
         <div className="quick-stats">
           <div className="stat-card">
             <h4>Current Phase</h4>
-            <p className="stat-value">Phase 8</p>
-            <p className="stat-label">Pickup Confirmation</p>
+            <p className="stat-value">Phase 9</p>
+            <p className="stat-label">Payment Integration</p>
           </div>
           <div className="stat-card">
             <h4>Account Status</h4>
@@ -79,8 +79,8 @@ const Dashboard = () => {
           </div>
           <div className="stat-card">
             <h4>Next Steps</h4>
-            <p className="stat-value">Phase 9</p>
-            <p className="stat-label">Payment Integration</p>
+            <p className="stat-value">Phase 10</p>
+            <p className="stat-label">Notifications</p>
           </div>
         </div>
       </main>

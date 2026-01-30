@@ -30,6 +30,12 @@ const CustomerDashboard = () => {
   const [orderView, setOrderView] = useState('upcoming');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
   const [orderSearch, setOrderSearch] = useState('');
+  const [qrModalOrder, setQrModalOrder] = useState(null);
+  const [qrDataUrl, setQrDataUrl] = useState('');
+  const [qrCode, setQrCode] = useState('');
+  const [qrLoading, setQrLoading] = useState(false);
+  const [qrError, setQrError] = useState('');
+  const [confirmingOrderId, setConfirmingOrderId] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -83,6 +89,12 @@ const CustomerDashboard = () => {
     } finally {
       setOrdersLoading(false);
     }
+  };
+
+  const updateOrderInState = (updatedOrder) => {
+    setOrders((prev) => prev.map((order) => (
+      order.id === updatedOrder.id ? { ...order, ...updatedOrder } : order
+    )));
   };
 
   const handleFarmSelect = async (farm) => {
@@ -143,6 +155,40 @@ const CustomerDashboard = () => {
     }
   };
 
+  const handleShowQr = async (order) => {
+    setQrModalOrder(order);
+    setQrDataUrl('');
+    setQrCode('');
+    setQrError('');
+    setQrLoading(true);
+    try {
+      const response = await orderAPI.getQr(order.id);
+      setQrDataUrl(response.data.qr_image);
+      setQrCode(response.data.qr_code);
+    } catch (error) {
+      console.error('Error loading QR code:', error);
+      setQrError('Failed to load QR code');
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
+  const handleSelfConfirm = async (order) => {
+    if (!window.confirm('Confirm pickup for this order?')) {
+      return;
+    }
+    setConfirmingOrderId(order.id);
+    try {
+      const response = await orderAPI.selfConfirm(order.id);
+      updateOrderInState(response.data.order);
+    } catch (error) {
+      console.error('Error confirming pickup:', error);
+      setErrorMessage('Failed to confirm pickup');
+    } finally {
+      setConfirmingOrderId(null);
+    }
+  };
+
   const filteredProducts = products.filter(product => {
     if (selectedFarm && product.farm_id !== selectedFarm.id) return false;
     if (productFilter !== 'all' && product.type !== productFilter) return false;
@@ -157,15 +203,42 @@ const CustomerDashboard = () => {
     }
   };
 
+  const formatConfirmationMethod = (method) => {
+    switch (method) {
+      case 'qr_code':
+        return 'QR Scan';
+      case 'farmer_manual':
+        return 'Farmer Manual';
+      case 'customer_self':
+        return 'Self Confirm';
+      default:
+        return 'Confirmed';
+    }
+  };
+
+  const canShowQr = (order) => !['cancelled', 'no_show', 'picked_up'].includes(order.status);
+
+  const canSelfConfirm = (order) => {
+    if (['cancelled', 'no_show', 'picked_up'].includes(order.status)) {
+      return false;
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    return order.scheduled_date <= today;
+  };
+
   const filteredOrders = useMemo(() => {
     let list = orders;
     const today = new Date().toISOString().slice(0, 10);
 
     if (orderView === 'upcoming') {
-      list = list.filter((order) => order.scheduled_date >= today && order.status !== 'cancelled');
+      list = list.filter((order) => (
+        order.scheduled_date >= today && !['cancelled', 'picked_up', 'no_show'].includes(order.status)
+      ));
     }
     if (orderView === 'history') {
-      list = list.filter((order) => order.scheduled_date < today || order.status === 'cancelled');
+      list = list.filter((order) => (
+        order.scheduled_date < today || ['cancelled', 'picked_up', 'no_show'].includes(order.status)
+      ));
     }
 
     if (orderStatusFilter !== 'all') {
@@ -449,9 +522,36 @@ const CustomerDashboard = () => {
                                 <span className="order-product">{order.products?.name || 'Product'}</span>
                                 <span className="order-farm">{order.farms?.name || 'Farm'}</span>
                                 <span className={`order-status ${order.status}`}>{order.status}</span>
+                                {order.status === 'picked_up' && (
+                                  <span className="order-confirmation">
+                                    {formatConfirmationMethod(order.confirmation_method)}
+                                    {order.pickup_confirmed_at && (
+                                      <span className="order-confirmation-time">
+                                        {' '} - {new Date(order.pickup_confirmed_at).toLocaleString()}
+                                      </span>
+                                    )}
+                                  </span>
+                                )}
                               </div>
                               <div className="order-actions">
                                 <span className="order-quantity">{order.quantity} {order.products?.unit || ''}</span>
+                                {canShowQr(order) && (
+                                  <button
+                                    className="btn-secondary"
+                                    onClick={() => handleShowQr(order)}
+                                  >
+                                    Show QR
+                                  </button>
+                                )}
+                                {canSelfConfirm(order) && (
+                                  <button
+                                    className="btn-primary"
+                                    onClick={() => handleSelfConfirm(order)}
+                                    disabled={confirmingOrderId === order.id}
+                                  >
+                                    {confirmingOrderId === order.id ? 'Confirming...' : 'Confirm Pickup'}
+                                  </button>
+                                )}
                                 {order.status === 'pending' && orderView === 'upcoming' && (
                                   <>
                                     <button
@@ -513,6 +613,45 @@ const CustomerDashboard = () => {
               setEditingOrder(null);
             }}
           />
+        </div>
+      )}
+
+      {qrModalOrder && (
+        <div className="modal-backdrop">
+          <div className="qr-modal">
+            <div className="modal-header">
+              <div>
+                <h3>Pickup QR Code</h3>
+                <p>{qrModalOrder.scheduled_date}</p>
+              </div>
+              <button
+                className="link-btn"
+                onClick={() => {
+                  setQrModalOrder(null);
+                  setQrDataUrl('');
+                  setQrCode('');
+                  setQrError('');
+                }}
+              >
+                Close
+              </button>
+            </div>
+            <div className="qr-modal-body">
+              {qrLoading ? (
+                <div className="loading-inline">Loading QR code...</div>
+              ) : qrError ? (
+                <div className="error-message">{qrError}</div>
+              ) : (
+                <>
+                  {qrDataUrl && (
+                    <img src={qrDataUrl} alt="Pickup QR code" className="qr-image" />
+                  )}
+                  {qrCode && <p className="qr-code-text">Code: {qrCode}</p>}
+                  <p className="qr-help">Show this QR code to the farmer at pickup.</p>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       )}
 

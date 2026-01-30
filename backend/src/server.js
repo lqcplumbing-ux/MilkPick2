@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const cron = require('node-cron');
 const { generateOrdersForDueSubscriptions } = require('./services/subscriptionService');
+const { markLateOrders } = require('./services/pickupService');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -62,6 +63,18 @@ if (process.env.ENABLE_SCHEDULER !== 'false') {
       })
       .catch((error) => {
         console.error('Scheduler error:', error.message);
+      });
+  });
+
+  cron.schedule('15 * * * *', () => {
+    markLateOrders()
+      .then((result) => {
+        if (process.env.NODE_ENV !== 'production' && result.updated > 0) {
+          console.log(`Scheduler: marked ${result.updated} orders late`);
+        }
+      })
+      .catch((error) => {
+        console.error('Late pickup scheduler error:', error.message);
       });
   });
 }

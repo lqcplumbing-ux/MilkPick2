@@ -34,6 +34,38 @@ router.get('/farm', authenticate, isFarmer, orderController.getFarmOrders);
 router.get('/farm/stats', authenticate, isFarmer, orderController.getFarmOrderStats);
 
 /**
+ * @route   GET /api/orders/:id/qr
+ * @desc    Get QR code for an order
+ * @access  Private (Customer or Farmer)
+ */
+router.get('/:id/qr', authenticate, orderController.getOrderQrCode);
+
+/**
+ * @route   POST /api/orders/scan
+ * @desc    Confirm pickup via QR scan
+ * @access  Private (Farmers only)
+ */
+router.post('/scan', authenticate, isFarmer, [
+  body('code')
+    .notEmpty()
+    .withMessage('QR code is required')
+], orderController.confirmPickupByQr);
+
+/**
+ * @route   POST /api/orders/:id/confirm
+ * @desc    Manually confirm pickup
+ * @access  Private (Farmers only)
+ */
+router.post('/:id/confirm', authenticate, isFarmer, orderController.confirmOrderPickup);
+
+/**
+ * @route   POST /api/orders/:id/self-confirm
+ * @desc    Customer self-confirm pickup
+ * @access  Private (Customers only)
+ */
+router.post('/:id/self-confirm', authenticate, isCustomer, orderController.selfConfirmOrderPickup);
+
+/**
  * @route   PUT /api/orders/:id
  * @desc    Update upcoming order
  * @access  Private (Customers only)

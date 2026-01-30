@@ -1,6 +1,12 @@
 const { validationResult } = require('express-validator');
 const supabase = require('../config/supabase');
 const { formatDate, parseDate } = require('../services/subscriptionService');
+const {
+  ensureQrCodeForOrder,
+  createQrCodeDataUrl,
+  isConfirmableStatus,
+  updatePickupConfirmation
+} = require('../services/pickupService');
 
 const getFarmForFarmer = async (farmerId) => {
   const { data: farm, error } = await supabase
@@ -29,6 +35,8 @@ exports.getMyOrders = async (req, res) => {
         total_amount,
         scheduled_date,
         status,
+        pickup_confirmed_at,
+        confirmation_method,
         payment_status,
         created_at,
         products (
@@ -87,6 +95,8 @@ exports.getUpcomingOrders = async (req, res) => {
         total_amount,
         scheduled_date,
         status,
+        pickup_confirmed_at,
+        confirmation_method,
         products (
           id,
           name,
@@ -136,6 +146,8 @@ exports.getFarmOrders = async (req, res) => {
         total_amount,
         scheduled_date,
         status,
+        pickup_confirmed_at,
+        confirmation_method,
         payment_status,
         notes,
         created_at,
@@ -395,6 +407,169 @@ exports.cancelOrder = async (req, res) => {
     });
   } catch (error) {
     console.error('Cancel order error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Get QR code for order (customer or farmer)
+exports.getOrderQrCode = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select('id, customer_id, farm_id, status, qr_code, scheduled_date')
+      .eq('id', id)
+      .single();
+
+    if (error || !order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (req.user.role === 'customer') {
+      if (order.customer_id !== req.user.id) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+    } else if (req.user.role === 'farmer') {
+      const farm = await getFarmForFarmer(req.user.id);
+      if (!farm || order.farm_id !== farm.id) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+    } else {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    if (['cancelled', 'no_show'].includes(order.status)) {
+      return res.status(400).json({ error: 'QR code not available for cancelled orders' });
+    }
+
+    const code = await ensureQrCodeForOrder(order);
+    const dataUrl = await createQrCodeDataUrl(code);
+
+    res.json({
+      order_id: order.id,
+      qr_code: code,
+      qr_image: dataUrl,
+      scheduled_date: order.scheduled_date
+    });
+  } catch (error) {
+    console.error('Get order QR error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Farmer manual pickup confirmation
+exports.confirmOrderPickup = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const farm = await getFarmForFarmer(req.user.id);
+    if (!farm) {
+      return res.status(404).json({ error: 'Farm not found. Please create a farm first.' });
+    }
+
+    const { data: order } = await supabase
+      .from('orders')
+      .select('id, status, farm_id')
+      .eq('id', id)
+      .single();
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.farm_id !== farm.id) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    if (!isConfirmableStatus(order.status)) {
+      return res.status(400).json({ error: 'Order cannot be confirmed' });
+    }
+
+    const updatedOrder = await updatePickupConfirmation(order.id, 'farmer_manual');
+    res.json({ message: 'Pickup confirmed', order: updatedOrder });
+  } catch (error) {
+    console.error('Manual pickup confirmation error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Customer self pickup confirmation
+exports.selfConfirmOrderPickup = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const today = formatDate(new Date());
+
+    const { data: order } = await supabase
+      .from('orders')
+      .select('id, status, customer_id, scheduled_date')
+      .eq('id', id)
+      .single();
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.customer_id !== req.user.id) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    if (order.scheduled_date > today) {
+      return res.status(400).json({ error: 'Cannot confirm pickup before scheduled date' });
+    }
+
+    if (!isConfirmableStatus(order.status)) {
+      return res.status(400).json({ error: 'Order cannot be confirmed' });
+    }
+
+    const updatedOrder = await updatePickupConfirmation(order.id, 'customer_self');
+    res.json({ message: 'Pickup confirmed', order: updatedOrder });
+  } catch (error) {
+    console.error('Self pickup confirmation error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Farmer QR scan confirmation
+exports.confirmPickupByQr = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { code } = req.body;
+
+    if (!code) {
+      return res.status(400).json({ error: 'QR code is required' });
+    }
+
+    const farm = await getFarmForFarmer(req.user.id);
+    if (!farm) {
+      return res.status(404).json({ error: 'Farm not found. Please create a farm first.' });
+    }
+
+    const { data: order } = await supabase
+      .from('orders')
+      .select('id, status, farm_id')
+      .eq('qr_code', code)
+      .maybeSingle();
+
+    if (!order) {
+      return res.status(404).json({ error: 'Invalid QR code' });
+    }
+
+    if (order.farm_id !== farm.id) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    if (!isConfirmableStatus(order.status)) {
+      return res.status(400).json({ error: 'Order cannot be confirmed' });
+    }
+
+    const updatedOrder = await updatePickupConfirmation(order.id, 'qr_code');
+    res.json({ message: 'Pickup confirmed', order: updatedOrder });
+  } catch (error) {
+    console.error('QR pickup confirmation error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };

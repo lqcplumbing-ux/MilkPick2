@@ -235,6 +235,14 @@ The database includes tables for:
 - `GET /api/notifications/preferences` - Get notification preferences
 - `PUT /api/notifications/preferences` - Update notification preferences
 
+### Surplus
+- `POST /api/surplus/opt-in` - Opt in/out of surplus alerts
+- `GET /api/surplus/opt-ins` - List surplus opt-ins
+- `GET /api/surplus/available` - Available surplus items
+- `POST /api/surplus/claim` - Claim surplus item
+- `GET /api/surplus/history` - Customer surplus history
+- `GET /api/surplus/farm/history` - Farm surplus history
+
 ### Inventory
 - `POST /api/inventory` - Create/update inventory
 - `GET /api/inventory/my-farm` - Get current farm inventory
@@ -250,7 +258,7 @@ The database includes tables for:
 
 See [ROADMAP.md](ROADMAP.md) for the complete development roadmap with 12 phases.
 
-**Current Phase**: Phase 11 - Surplus Queue System
+**Current Phase**: Phase 12 - Testing, Deployment & Polish
 
 ## Testing
 

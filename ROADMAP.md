@@ -213,17 +213,17 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 **Goal**: Opt-in surplus inventory alerts
 
 ### Deliverables:
-- [ ] Surplus opt-in management API
-- [ ] Customer opt-in preferences
-- [ ] Surplus alert creation API
-- [ ] Surplus notification logic
-- [ ] First-come-first-served queue implementation
-- [ ] Surplus claim API
-- [ ] Opt-in toggle UI
-- [ ] Surplus alert notifications
-- [ ] Available surplus view for customers
-- [ ] Farmer surplus marking UI
-- [ ] Surplus history tracking
+- [x] Surplus opt-in management API
+- [x] Customer opt-in preferences
+- [x] Surplus alert creation API
+- [x] Surplus notification logic
+- [x] First-come-first-served queue implementation
+- [x] Surplus claim API
+- [x] Opt-in toggle UI
+- [x] Surplus alert notifications
+- [x] Available surplus view for customers
+- [x] Farmer surplus marking UI
+- [x] Surplus history tracking
 
 **Dependencies**: Phase 4, Phase 10
 **Estimated Completion**: Phase 11
@@ -256,8 +256,8 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 
 ## Current Progress Tracking
 
-**Current Phase**: Phase 11
-**Overall Completion**: 83.3% (10/12 phases)
+**Current Phase**: Phase 12
+**Overall Completion**: 91.7% (11/12 phases)
 
 ### Phase Completion Status:
 - [x] Phase 1: Project Foundation & Setup (100%)
@@ -270,7 +270,7 @@ This roadmap breaks down the MilkPick application into 12 phases with specific d
 - [x] Phase 8: Pickup Confirmation System (100%)
 - [x] Phase 9: Payment Integration (100%)
 - [x] Phase 10: Notification System (100%)
-- [ ] Phase 11: Surplus Queue System (0%)
+- [x] Phase 11: Surplus Queue System (100%)
 - [ ] Phase 12: Testing, Deployment & Polish (0%)
 
 ---

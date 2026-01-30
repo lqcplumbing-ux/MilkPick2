@@ -23,7 +23,8 @@ const inventoryValidation = [
     .withMessage('Low stock threshold must be 0 or greater'),
   body('is_surplus')
     .optional()
-    .isBoolean(),
+    .isBoolean()
+    .toBoolean(),
   body('notes')
     .optional({ nullable: true })
     .trim()

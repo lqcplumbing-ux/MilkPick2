@@ -8,6 +8,7 @@ import InventoryManager from '../components/InventoryManager';
 import FarmerOrders from '../components/FarmerOrders';
 import FarmerPayouts from '../components/FarmerPayouts';
 import NotificationCenter from '../components/NotificationCenter';
+import SurplusFarmPanel from '../components/SurplusFarmPanel';
 import './FarmerDashboard.css';
 
 const FarmerDashboard = () => {
@@ -137,6 +138,13 @@ const FarmerDashboard = () => {
         >
           Notifications
         </button>
+        <button
+          className={`nav-btn ${activeTab === 'surplus' ? 'active' : ''}`}
+          onClick={() => setActiveTab('surplus')}
+          disabled={!farm}
+        >
+          Surplus
+        </button>
       </div>
 
       <main className="dashboard-main">
@@ -256,6 +264,10 @@ const FarmerDashboard = () => {
 
         {activeTab === 'notifications' && farm && (
           <NotificationCenter />
+        )}
+
+        {activeTab === 'surplus' && farm && (
+          <SurplusFarmPanel />
         )}
       </main>
     </div>

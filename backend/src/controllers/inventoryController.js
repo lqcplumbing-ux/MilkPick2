@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const supabase = require('../config/supabase');
+const { notifySurplusForInventory } = require('../services/surplusService');
 
 const normalizeDate = (value) => {
   if (!value) return null;
@@ -111,6 +112,14 @@ exports.upsertInventory = async (req, res) => {
       notes: notes || null
     };
 
+    const { data: existing } = await supabase
+      .from('inventory')
+      .select('id, is_surplus')
+      .eq('farm_id', farm.id)
+      .eq('product_id', product_id)
+      .eq('date', inventoryDate)
+      .maybeSingle();
+
     const { data: inventory, error } = await supabase
       .from('inventory')
       .upsert([payload], { onConflict: 'farm_id,product_id,date' })
@@ -120,6 +129,14 @@ exports.upsertInventory = async (req, res) => {
     if (error) {
       console.error('Error updating inventory:', error);
       return res.status(500).json({ error: 'Failed to update inventory' });
+    }
+
+    try {
+      if (inventory.is_surplus && !existing?.is_surplus) {
+        await notifySurplusForInventory(inventory);
+      }
+    } catch (notifyError) {
+      console.error('Surplus notification error:', notifyError.message);
     }
 
     res.json({

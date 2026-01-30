@@ -8,6 +8,7 @@ import ScheduleCalendar from '../components/ScheduleCalendar';
 import OrderEditForm from '../components/OrderEditForm';
 import PaymentCenter from '../components/PaymentCenter';
 import NotificationCenter from '../components/NotificationCenter';
+import SurplusCenter from '../components/SurplusCenter';
 import './CustomerDashboard.css';
 
 const CustomerDashboard = () => {
@@ -326,6 +327,12 @@ const CustomerDashboard = () => {
         >
           Notifications
         </button>
+        <button
+          className={`nav-btn ${activeTab === 'surplus' ? 'active' : ''}`}
+          onClick={() => setActiveTab('surplus')}
+        >
+          Surplus
+        </button>
       </div>
 
       <main className="dashboard-main">
@@ -601,6 +608,10 @@ const CustomerDashboard = () => {
 
         {activeTab === 'notifications' && (
           <NotificationCenter />
+        )}
+
+        {activeTab === 'surplus' && (
+          <SurplusCenter />
         )}
       </main>
 

@@ -121,4 +121,14 @@ export const notificationAPI = {
   getNotifications: (params) => api.get('/notifications', { params })
 };
 
+// Surplus APIs
+export const surplusAPI = {
+  optIn: (data) => api.post('/surplus/opt-in', data),
+  getOptIns: () => api.get('/surplus/opt-ins'),
+  getAvailable: (params) => api.get('/surplus/available', { params }),
+  claim: (data) => api.post('/surplus/claim', data),
+  getHistory: () => api.get('/surplus/history'),
+  getFarmHistory: () => api.get('/surplus/farm/history')
+};
+
 export default api;
